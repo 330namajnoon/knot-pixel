@@ -36,8 +36,6 @@ const PaternPage = () => {
                 });
 
                 setSelectedKnotGroup({ x: 0, y: knots.length - 40 });
-
-                console.log("Patern created successfully:", map);
             })
             .catch((error) => {
                 console.error("Error creating patern:", error);
@@ -46,17 +44,14 @@ const PaternPage = () => {
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
-            console.log("Key pressed:", e.key);
             if (e.key === " ") {
                 setSelectedKnotGroup((selectedKnotGroup) => {
                     if (patern?.knots[selectedKnotGroup.y]?.[selectedKnotGroup.x + 1]) {
-                        console.log("Moving to next knot group");
                         return {
                             x: selectedKnotGroup.x + 1,
                             y: selectedKnotGroup.y,
                         };
                     } else if (patern?.knots[selectedKnotGroup.y - 1]) {
-                        console.log("Moving to next row");
                         return {
                             x: 0,
                             y: selectedKnotGroup.y - 1,

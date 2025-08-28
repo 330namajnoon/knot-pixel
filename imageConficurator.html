@@ -337,7 +337,6 @@
                     cutCanvas.width = this.cuterPos.width;
                     cutCanvas.height = this.cuterPos.height;
                     const cutCtx = cutCanvas.getContext("2d");
-                    console.log(this.cuterPos);
                     cutCtx.drawImage(
                         this.img,
                         this.cuterPos.x,
@@ -358,16 +357,13 @@
             configurator
                 .render()
                 .then(() => {
-                    console.log("Imagen cargada y renderizada correctamente");
                 })
                 .catch((error) => {
                     console.error("Error al cargar la imagen:", error);
                 });
             document.getElementById("cut").addEventListener("click", () => {
-				console.log(configurator.cut())
                 open(configurator.cut());
             });
-            console.log(configurator);
         </script>
     </body>
 </html>

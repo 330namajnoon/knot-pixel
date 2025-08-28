@@ -73,7 +73,6 @@ class ImageSizeConfigurator {
     }
 
     toImageURL() {
-        console.log(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height));
         return this.canvas.toDataURL("image/png");
     }
 }

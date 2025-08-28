@@ -112,6 +112,7 @@ const ImageResolution = () => {
                         }
                         setSrc(imageResolutionConfigurator.current.toImageURL());
                         navigate(path.PALETTE_CONFIGURATOR);
+                        localStorage.setItem("imageSrc", imageResolutionConfigurator.current.toImageURL());
                     }}
                 >
                     <NavigateNext />

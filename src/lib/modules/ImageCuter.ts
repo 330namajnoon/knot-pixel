@@ -298,7 +298,6 @@ class ImageCuter {
 			width,
 			height
 		);
-		console.log(cutCtx.getImageData(0, 0, width, height));
 		return cutCanvas.toDataURL();
     }
 }

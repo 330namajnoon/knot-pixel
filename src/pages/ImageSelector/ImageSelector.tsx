@@ -35,7 +35,7 @@ const ImageSelector = () => {
                     color="secondary"
                     aria-label="NavigateNext"
                     onClick={() => {
-						localStorage.setItem("imageSrc", src);
+						// localStorage.setItem("imageSrc", src);
                         navigate(path.CUT_IMAGE);
                     }}
                 >
@@ -47,7 +47,6 @@ const ImageSelector = () => {
                     color="secondary"
                     aria-label="add"
                     onClick={() => {
-                        console.log(fileRef);
                         if (fileRef.current) {
                             fileRef.current.click();
                         }

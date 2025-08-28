@@ -11,7 +11,7 @@ class ImagePaletteConfigurator {
     yPixels: number;
     palette: number[][];
 
-    constructor(root: HTMLElement, imgSrc: string) {
+    constructor(root: HTMLElement, imgSrc: string, paletteSize = 4) {
         this.root = root;
         this.imgSrc = imgSrc;
         this.canvasOriginal = document.createElement("canvas");
@@ -26,7 +26,7 @@ class ImagePaletteConfigurator {
         this.canvas.style.top = "0";
         this.canvas.style.left = "0";
         this.img = new Image();
-        this.paletteSize = 5;
+        this.paletteSize = paletteSize;
         this.xPixels = 0;
         this.yPixels = 0;
         this.palette = [];
@@ -256,7 +256,6 @@ class ImagePaletteConfigurator {
         return new Promise<ImagePaletteConfigurator>((resolve, reject) => {
             this.img.src = this.imgSrc;
             this.img.onload = () => {
-                console.log(this.root.getBoundingClientRect());
                 this.draw();
                 resolve(this);
             };
@@ -294,8 +293,16 @@ class ImagePaletteConfigurator {
             }
         });
 
-        return Array.from(map.values());
+        const values = Array.from(map.values());
 
+        [...values].forEach((v) => {
+            const index = this.palette.findIndex((c) => c[0] === v[0] && c[1] === v[1] && c[2] === v[2]);
+            if (index !== -1) {
+                values[index] = this.palette[index];
+            }
+        });
+
+        return values;
     }
 
     changePaletteColor(index: number, newColor_: string) {
