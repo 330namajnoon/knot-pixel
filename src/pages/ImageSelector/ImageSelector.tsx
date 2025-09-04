@@ -1,14 +1,45 @@
 import { Add, NavigateNext } from "@mui/icons-material";
 import { Box, Container, Fab, Typography } from "@mui/material";
-import { createRef } from "react";
-import { useImage } from "../../hooks/useImage";
-import { useNavigate } from "react-router-dom";
+import { createRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { path } from "../../constants";
+import { useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
 
 const ImageSelector = () => {
-    const fileRef = createRef<HTMLInputElement>();
     const navigate = useNavigate();
-    const [src, setSrc] = useImage();
+    const [setPatern] = useSetPaternMutation();
+    const fileRef = createRef<HTMLInputElement>();
+    const [src, setSrc] = useState<string>("");
+    const { patern } = useParams<{ patern: string }>();
+
+    const handleSetPatern = async () => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const file = new File([blob], "patern.png", { type: "image/png" });
+                        const formData = new FormData();
+                        formData.append("patern", file);
+                        setPatern({ imageName: `${patern}.png`, imageData: formData }).then((res) => {
+                            if ("data" in res && res.data?.success) {
+                                navigate(path.CUT_IMAGE.replace(":patern", `${patern}.png`));
+                            } else {
+                                alert("Error uploading image");
+                            }
+                        });
+                    }
+                }, "image/png");
+            }
+        };
+    };
+
     return (
         <Container
             sx={{
@@ -30,15 +61,7 @@ const ImageSelector = () => {
                 </Box>
             )}
             {src ? (
-                <Fab
-                    size="medium"
-                    color="secondary"
-                    aria-label="NavigateNext"
-                    onClick={() => {
-						// localStorage.setItem("imageSrc", src);
-                        navigate(path.CUT_IMAGE);
-                    }}
-                >
+                <Fab size="medium" color="secondary" aria-label="NavigateNext" onClick={handleSetPatern}>
                     <NavigateNext />
                 </Fab>
             ) : (

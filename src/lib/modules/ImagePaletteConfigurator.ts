@@ -255,6 +255,7 @@ class ImagePaletteConfigurator {
     render() {
         return new Promise<ImagePaletteConfigurator>((resolve, reject) => {
             this.img.src = this.imgSrc;
+            this.img.crossOrigin = "Anonymous";
             this.img.onload = () => {
                 this.draw();
                 resolve(this);

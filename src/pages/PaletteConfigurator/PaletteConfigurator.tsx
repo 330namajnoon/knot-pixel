@@ -125,7 +125,7 @@ const PaletteConfigurator = () => {
                 gap: 3,
                 padding: 3,
             }}
-        >
+            >
             <Typography variant="h1" component={"h2"} sx={{ fontSize: "30px" }}>
                 Palette Configurator
             </Typography>
