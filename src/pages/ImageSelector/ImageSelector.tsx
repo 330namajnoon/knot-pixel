@@ -10,7 +10,7 @@ const ImageSelector = () => {
     const [setPatern] = useSetPaternMutation();
     const fileRef = createRef<HTMLInputElement>();
     const [src, setSrc] = useState<string>("");
-    const { patern } = useParams<{ patern: string }>();
+    const { paternId } = useParams<{ paternId: string }>();
 
     const handleSetPatern = async () => {
         const img = new Image();
@@ -26,10 +26,11 @@ const ImageSelector = () => {
                     if (blob) {
                         const file = new File([blob], "patern.png", { type: "image/png" });
                         const formData = new FormData();
-                        formData.append("patern", file);
-                        setPatern({ imageName: `${patern}.png`, imageData: formData }).then((res) => {
-                            if ("data" in res && res.data?.success) {
-                                navigate(path.CUT_IMAGE.replace(":patern", `${patern}.png`));
+                        formData.append("image", file);
+                        setPatern({ imageData: formData, paternId: paternId || "" }).then((res) => {
+                            if (res.data && res.data?.success) {
+                                console.log("Image uploaded successfully");
+                                navigate(path.CUT_IMAGE.replace(":paternId", paternId || ""));
                             } else {
                                 alert("Error uploading image");
                             }

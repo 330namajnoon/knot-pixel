@@ -1,12 +1,14 @@
-// const BASE_URL = "https://sinul.es";
-const BASE_URL = "http://localhost:4005";
+const BASE_URL = "https://sinul.es";
+// const BASE_URL = "http://localhost:4005";
 
 const path = {
-    SELECT_IMAGE: "/select-image/:patern",
-    CUT_IMAGE: "/cut/:patern",
-    PALETTE_CONFIGURATOR: "/palette/:patern",
-    IMAGE_RESOLUTION: "/image-resolution/:patern",
-    PATERN: "/patern/:patern",
+    PATERNS: "/",
+    LOGIN: "/login",
+    SELECT_IMAGE: "/select-image/:paternId",
+    CUT_IMAGE: "/cut/:paternId",
+    PALETTE_CONFIGURATOR: "/palette/:paternId",
+    IMAGE_RESOLUTION: "/image-resolution/:paternId",
+    PATERN: "/patern/:paternId",
 };
 
 export { path, BASE_URL };
