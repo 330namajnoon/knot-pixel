@@ -6,13 +6,31 @@ export interface Patern {
 	name: string;
 }
 
+export interface Work {
+	id: number;
+	paternId: string;
+	paternName: string;
+	paternPath: string;
+	timeSpent: number;
+	title: string;
+}
+
 export const paternApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
-		getPaterns: builder.query<string[], void>({
+		getPaterns: builder.query<Patern[], void>({
 			query: () =>  ({
 				url: `/paterns`,
 				method: "GET",
 			}),
+			transformResponse: (response: { data: Patern[] }) => response.data,
+			providesTags: ["Patern"],
+		}),
+		getPaternWorks: builder.query<Work[], void>({
+			query: () =>  ({
+				url: `/works`,
+				method: "GET",
+			}),
+			transformResponse: (response: { data: Work[] }) => response.data,
 			providesTags: ["Patern"],
 		}),
 		getPatern: builder.query<Patern, { paternId: string }>({
@@ -39,4 +57,4 @@ export const paternApiSlice = apiSlice.injectEndpoints({
 	overrideExisting: false,
 });
 
-export const { useGetPaternQuery, useSetPaternMutation, useGetPaternsQuery, useSetCreatePaternMutation } = paternApiSlice;
+export const { useGetPaternQuery, useSetPaternMutation, useGetPaternsQuery, useSetCreatePaternMutation, useGetPaternWorksQuery } = paternApiSlice;
