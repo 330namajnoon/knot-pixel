@@ -1,24 +1,36 @@
 import { Box, Container, Fab, Typography } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useImage } from "../../hooks/useImage";
 import ImageCuter from "../../lib/modules/ImageCuter";
 import { ContentCut, NavigateNext } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import { path } from "../../constants";
+import { useNavigate, useParams } from "react-router-dom";
+import { BASE_URL, path } from "../../constants";
+import { useGetPaternQuery, useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
 
 const CutImage = () => {
     const navigate = useNavigate();
-    const [src, setSrc] = useImage();
     const rootRef = useRef<HTMLDivElement>(null);
     const imageCuterRef = useRef<ImageCuter>(null);
+    const { paternId } = useParams<{ paternId: string }>();
+    const [setPatern] = useSetPaternMutation();
+    const { data: paternData } = useGetPaternQuery({ paternId: paternId || "" }, { skip: !paternId });
+    const [src, setSrc] = useState("");
 
     useEffect(() => {
-        if (src && rootRef.current) {
+        if (paternData?.path && rootRef.current) {
             const imageCuter = new ImageCuter(rootRef.current, src);
             imageCuter.render();
             imageCuterRef.current = imageCuter;
+            setSrc(src);
         }
     }, [src]);
+
+    useEffect(() => {
+        if (paternData?.path) {
+            setSrc(`${BASE_URL}/${paternData.path}`);
+        }
+    }, [paternData]);
+
     return (
         <Container
             sx={{
@@ -41,7 +53,7 @@ const CutImage = () => {
                     color="secondary"
                     aria-label="contentCut"
                     onClick={() => {
-                        setSrc(imageCuterRef.current?.cut() || "");
+                        setSrc(imageCuterRef.current?.cut().toDataURL() || "");
                     }}
                 >
                     <ContentCut />
@@ -51,7 +63,21 @@ const CutImage = () => {
                     color="secondary"
                     aria-label="navigateNext"
                     onClick={() => {
-                        navigate(path.IMAGE_RESOLUTION);
+                        imageCuterRef.current?.cut()?.toBlob((blob) => {
+                            if (blob) {
+                                const file = new File([blob], "patern.png", { type: "image/png" });
+                                const formData = new FormData();
+                                formData.append("image", file);
+                                setPatern({ imageData: formData, paternId: paternId || "" }).then((res) => {
+                                    if (res.data && res.data?.success) {
+                                        console.log("Image uploaded successfully");
+                                        navigate(path.IMAGE_RESOLUTION.replace(":paternId", paternId || ""));
+                                    } else {
+                                        alert("Error uploading image");
+                                    }
+                                });
+                            }
+                        });
                     }}
                 >
                     <NavigateNext />

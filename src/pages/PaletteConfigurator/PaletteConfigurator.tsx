@@ -3,12 +3,12 @@ import { Box, Container, Fab, TextField, Typography } from "@mui/material";
 import { BASE_URL, path } from "../../constants";
 import ImagePaletteConfigurator from "../../lib/modules/ImagePaletteConfigurator";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useImage } from "../../hooks/useImage";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetPaternQuery, useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
 
 const PaletteConfigurator = () => {
     const navigate = useNavigate();
-    const [src, setSrc] = useImage();
+    const [src, setSrc] = useState("");
     const rootRef = useRef<HTMLDivElement>(null);
     const [paletteSize, setPaletteSize] = useState(4);
     const [palette, setPalette] = useState<number[][]>([]);
@@ -21,6 +21,9 @@ const PaletteConfigurator = () => {
     const [detectedColor, setDetectedColor] = useState<number[]>([]);
     const canvasRef = useRef<HTMLCanvasElement>(document.createElement("canvas"));
     const requestAnimationFrameRef = useRef<number>(0);
+    const { paternId } = useParams<{ paternId: string }>();
+    const [setPatern] = useSetPaternMutation();
+    const { data: paternData } = useGetPaternQuery({ paternId: paternId || "" }, { skip: !paternId });
 
     function getCenterColor() {
         if (!videoRef.current || !canvasRef.current) return;
@@ -35,21 +38,21 @@ const PaletteConfigurator = () => {
 
         // Centro de la imagen
         const size = 10;
-        const x = Math.floor((videoWidth / 2) - (size / 2));
-        const y = Math.floor((videoHeight / 2) - (size / 2));
+        const x = Math.floor(videoWidth / 2 - size / 2);
+        const y = Math.floor(videoHeight / 2 - size / 2);
 
         const data = ctx.getImageData(x, y, size, size).data;
         const rgb: number[] = new Array(3).fill(0);
         for (let i = 0; i < data.length; i += 4) {
-            rgb[0]+= data[i];
-            rgb[1]+= data[i + 1];
-            rgb[2]+= data[i + 2];
+            rgb[0] += data[i];
+            rgb[1] += data[i + 1];
+            rgb[2] += data[i + 2];
         }
-        
-        rgb[0] = Math.floor(rgb[0]/(size * size));
-        rgb[1] = Math.floor(rgb[1]/(size * size));
-        rgb[2] = Math.floor(rgb[2]/(size * size));
-        
+
+        rgb[0] = Math.floor(rgb[0] / (size * size));
+        rgb[1] = Math.floor(rgb[1] / (size * size));
+        rgb[2] = Math.floor(rgb[2] / (size * size));
+
         console.log(rgb);
 
         setDetectedColor(rgb);
@@ -84,6 +87,12 @@ const PaletteConfigurator = () => {
             return newPalette;
         });
     }, [detectedColor]);
+
+    useEffect(() => {
+        if (paternData?.path) {
+            setSrc(`${BASE_URL}/${paternData.path}`);
+        }
+    }, [paternData]);
 
     useEffect(() => {
         if (src && rootRef.current) {
@@ -125,7 +134,7 @@ const PaletteConfigurator = () => {
                 gap: 3,
                 padding: 3,
             }}
-            >
+        >
             <Typography variant="h1" component={"h2"} sx={{ fontSize: "30px" }}>
                 Palette Configurator
             </Typography>
@@ -181,6 +190,12 @@ const PaletteConfigurator = () => {
                                     }
                                 }}
                             />
+                            <h5>
+                                Azul: {ImagePaletteConfigurator.rgbToCmyk(color).c},{" "}
+                                Rosa: {ImagePaletteConfigurator.rgbToCmyk(color).m},{" "}
+                                Amarillo: {ImagePaletteConfigurator.rgbToCmyk(color).y},{" "}
+                                Negro: {ImagePaletteConfigurator.rgbToCmyk(color).k},{" "}
+                            </h5>
                         </Box>
                     ))}
                 </Box>
@@ -193,40 +208,28 @@ const PaletteConfigurator = () => {
                             console.error("ImagePaletteConfigurator instance is not initialized.");
                             return;
                         }
-                        setSrc(imagePaletteConfiguratorRef.current.toImageURL());
-                        const img = new Image();
-                        img.src = imagePaletteConfiguratorRef.current.toImageURL();
-                        img.onload = () => {
-                            const canvas = document.createElement("canvas");
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-                            const ctx = canvas.getContext("2d");
-                            if (ctx) {
-                                ctx.drawImage(img, 0, 0);
-                                canvas.toBlob((blob) => {
-                                    if (blob) {
-                                        const file = new File([blob], "patern.png", { type: "image/png" });
-                                        const formData = new FormData();
-                                        formData.append("image", file);
-                                        fetch(`${BASE_URL}/patern`, { method: "POST", body: formData }).then(
-                                            (response) => {
-                                                if (response.ok) {
-                                                    navigate(path.PATERN);
-                                                } else {
-                                                    console.error("Failed to upload image:", response.statusText);
-                                                }
-                                            }
-                                        );
-                                    }
-                                }, "image/png");
+                        imagePaletteConfiguratorRef.current.toBlob((blob) => {
+                            if (blob) {
+                                const file = new File([blob], "palette.png", { type: "image/png" });
+                                const formData = new FormData();
+                                formData.append("image", file);
+                                setPatern({ imageData: formData, paternId: paternId || "" })
+                                    .unwrap()
+                                    .then(() => {
+                                        console.log("Image uploaded successfully");
+                                        navigate(path.PATERN.replace(":paternId", paternId || ""));
+                                    });
                             }
-                        };
+                        });
                     }}
                 >
                     <NavigateNext />
                 </Fab>
             </Box>
-            <video style={{ width: "100px", height: "100px", objectFit: "cover", position: "absolute", left: 0, top: 0 }} ref={videoRef}></video>
+            <video
+                style={{ width: "100px", height: "100px", objectFit: "cover", position: "absolute", left: 0, top: 0 }}
+                ref={videoRef}
+            ></video>
         </Container>
     );
 };

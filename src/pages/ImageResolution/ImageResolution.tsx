@@ -1,17 +1,23 @@
 import { NavigateNext } from "@mui/icons-material";
 import { Box, Container, Fab, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useImage } from "../../hooks/useImage";
+import { useNavigate, useParams } from "react-router-dom";
 import ImageSizeConfigurator from "../../lib/modules/ImageSizeConfigurator";
-import { path } from "../../constants";
+import { BASE_URL, path } from "../../constants";
+import { useGetPaternQuery, useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
 
 const ImageResolution = () => {
     const navigate = useNavigate();
-    const [src, setSrc] = useImage();
+    const [src, setSrc] = useState("");
     const rootRef = useRef<HTMLDivElement>(null);
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
     const imageResolutionConfigurator = useRef<ImageSizeConfigurator>(null);
+
+    const { paternId } = useParams<{ paternId: string }>();
+
+    const { data: paternData } = useGetPaternQuery({ paternId: paternId || "" }, { skip: !paternId });
+
+    const [setPatern] = useSetPaternMutation();
 
     useEffect(() => {
         if (src && rootRef.current) {
@@ -27,6 +33,12 @@ const ImageResolution = () => {
             imageResolutionConfigurator.current = resolutionConfigurator;
         }
     }, [src]);
+
+    useEffect(() => {
+        if (paternData?.path) {
+            setSrc(`${BASE_URL}/${paternData.path}`);
+        }
+    }, [paternData]);
 
     return (
         <Container
@@ -110,9 +122,20 @@ const ImageResolution = () => {
                             console.error("ImageResolutionConfigurator instance is not initialized.");
                             return;
                         }
-                        setSrc(imageResolutionConfigurator.current.toImageURL());
-                        navigate(path.PALETTE_CONFIGURATOR);
-                        localStorage.setItem("imageSrc", imageResolutionConfigurator.current.toImageURL());
+                        imageResolutionConfigurator.current.toBlob((blob) => {
+                            console.log(blob);
+                            if (blob) {
+                                const file = new File([blob], "patern.png", { type: "image/png" });
+                                const formData = new FormData();
+                                formData.append("image", file);
+                                setPatern({ imageData: formData, paternId: paternId || "" })
+                                    .unwrap()
+                                    .then((res) => {
+                                        console.log("Image uploaded successfully");
+                                        navigate(path.PALETTE_CONFIGURATOR.replace(":paternId", paternId || ""));
+                                    });
+                            }
+                        });
                     }}
                 >
                     <NavigateNext />

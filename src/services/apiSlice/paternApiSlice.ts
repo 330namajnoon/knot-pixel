@@ -1,5 +1,11 @@
 import apiSlice from ".";
 
+export interface Patern {
+	id: number;
+	path: string;
+	name: string;
+}
+
 export const paternApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		getPaterns: builder.query<string[], void>({
@@ -9,8 +15,8 @@ export const paternApiSlice = apiSlice.injectEndpoints({
 			}),
 			providesTags: ["Patern"],
 		}),
-		getPatern: builder.query<Blob, { imageName: string }>({
-			query: ({ imageName }) =>  `/patern/${imageName}`,
+		getPatern: builder.query<Patern, { paternId: string }>({
+			query: ({ paternId }) =>  `/patern/${paternId}`,
 			providesTags: ["Patern"],
 		}),
 		setPatern: builder.mutation<{error: string | undefined, success: boolean}, {paternId: string, imageData: FormData }>({

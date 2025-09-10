@@ -48,6 +48,7 @@ class ImageSizeConfigurator {
 
     render() {
         return new Promise<ImageSizeConfigurator>((resolve, reject) => {
+            this.img.crossOrigin = "anonymous";
             this.img.src = this.imgSrc;
             this.img.onload = () => {
                 this.draw();
@@ -74,6 +75,10 @@ class ImageSizeConfigurator {
 
     toImageURL() {
         return this.canvas.toDataURL("image/png");
+    }
+
+    toBlob(callback: (blob: Blob | null) => void) {
+        this.canvas.toBlob(callback, "image/png");
     }
 }
 

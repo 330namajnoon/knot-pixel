@@ -342,6 +342,10 @@ class ImagePaletteConfigurator {
         return this.canvasOriginal.toDataURL("image/png");
     }
 
+    toBlob(callback: (blob: Blob | null) => void) {
+        this.canvasOriginal.toBlob(callback, "image/png");
+    }
+
     static hexToRgb(hex: string) {
         hex = hex.replace(/^#/, "");
 
@@ -357,8 +361,11 @@ class ImagePaletteConfigurator {
             "#" +
             [r, g, b]
                 .map((x) => {
-                    const hex = x.toString(16);
-                    return hex.length === 1 ? "0" + hex : hex;
+                    if (x) {
+                        const hex = x.toString(16);
+                        return hex.length === 1 ? "0" + hex : hex;
+                    }
+                    return "00";
                 })
                 .join("")
         );
@@ -457,6 +464,22 @@ class ImagePaletteConfigurator {
         }
 
         return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+
+    static getContrastColor(hex: string): string {
+        // quitar # si existe
+        hex = hex.replace(/^#/, "");
+
+        // convertir a RGB
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        // fórmula de luminancia relativa (W3C)
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        // si es oscuro → blanco, si es claro → negro
+        return luminance > 0.5 ? "#000000" : "#FFFFFF";
     }
 }
 

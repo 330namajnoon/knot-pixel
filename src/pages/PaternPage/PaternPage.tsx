@@ -2,49 +2,57 @@ import { useEffect, useState } from "react";
 import PaternCreator, { type Patern } from "../../lib/modules/PaternCreator";
 import { BASE_URL } from "../../constants";
 import { Container } from "@mui/material";
+import { useGetPaternQuery } from "../../services/apiSlice/paternApiSlice";
+import { useParams } from "react-router-dom";
+import ImagePaletteConfigurator from "../../lib/modules/ImagePaletteConfigurator";
 
 const PaternPage = () => {
     const [patern, setPatern] = useState<Patern | null>(null);
+    const [src, setSrc] = useState("");
     const [selectedKnotGroup, setSelectedKnotGroup] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const { paternId } = useParams<{ paternId: string }>();
+    const { data: paternData } = useGetPaternQuery({ paternId: paternId || "" }, { skip: !paternId });
 
     useEffect(() => {
-        const paternCreator = new PaternCreator(`${BASE_URL}/mcd/patern-0.png`);
-        paternCreator
-            .create()
-            .then((patern) => {
-                const knots = patern.knots;
-                const pixel = [];
-                knots.forEach((row) => {
-                    row.forEach((knotGroup) => {
-                        knotGroup.forEach((knot) => {
-                            pixel.push({
-                                x: knot.x,
-                                y: knot.y,
-                                color: knot.color,
+        if (src) {
+            const paternCreator = new PaternCreator(src);
+            paternCreator
+                .create()
+                .then((patern) => {
+                    const knots = patern.knots;
+                    const pixel = [];
+                    knots.forEach((row) => {
+                        row.forEach((knotGroup) => {
+                            knotGroup.forEach((knot) => {
+                                pixel.push({
+                                    x: knot.x,
+                                    y: knot.y,
+                                    color: knot.color,
+                                });
                             });
                         });
                     });
-                });
-                setPatern(patern);
-                const map = new Map<string, string>();
+                    setPatern(patern);
+                    const map = new Map<string, string>();
 
-                pixel.forEach((p) => {
-                    const key = p.color;
-                    if (!map.has(key)) {
-                        map.set(key, p.color);
-                    }
-                });
+                    pixel.forEach((p) => {
+                        const key = p.color;
+                        if (!map.has(key)) {
+                            map.set(key, p.color);
+                        }
+                    });
 
-                setSelectedKnotGroup({ x: 0, y: knots.length - 40 });
-            })
-            .catch((error) => {
-                console.error("Error creating patern:", error);
-            });
-    }, []);
+                    setSelectedKnotGroup({ x: 0, y: knots.length - 40 });
+                })
+                .catch((error) => {
+                    console.error("Error creating patern:", error);
+                });
+        }
+    }, [src]);
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
-            if (e.key === " ") {
+            if (e.key === "s") {
                 setSelectedKnotGroup((selectedKnotGroup) => {
                     if (patern?.knots[selectedKnotGroup.y]?.[selectedKnotGroup.x + 1]) {
                         return {
@@ -67,6 +75,13 @@ const PaternPage = () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [patern]);
+
+    useEffect(() => {
+        if (paternData?.path) {
+            setSrc(`${BASE_URL}/${paternData.path}`);
+        }
+    }, [paternData]);
+
     return (
         <Container sx={{ display: "flex", flexDirection: "column" }}>
             {patern?.knots.map((row, rowIndex) => (
@@ -82,17 +97,17 @@ const PaternPage = () => {
                                             rowIndex === selectedKnotGroup.y &&
                                             knotIndex === knotGroup.length - 1
                                         ) {
-                                            el.scrollIntoView({ behavior: "auto", inline: "center", block: "center" });
+                                            el.scrollIntoView({ behavior: "smooth", inline: "center", block: "center" });
                                         }
                                     }}
                                     key={knotIndex}
                                     style={{
                                         width: "40px",
                                         height: "40px",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										color: "#fff",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        color: ImagePaletteConfigurator.getContrastColor(knot.color),
                                         backgroundColor: knot.color,
                                         border:
                                             groupIndex === selectedKnotGroup.x && rowIndex === selectedKnotGroup.y
@@ -100,7 +115,9 @@ const PaternPage = () => {
                                                 : "none",
                                     }}
                                 >
-                                    {groupIndex === selectedKnotGroup.x && rowIndex === selectedKnotGroup.y && knot.x + 1}
+                                    {groupIndex === selectedKnotGroup.x &&
+                                        rowIndex === selectedKnotGroup.y &&
+                                        knot.x + 1}
                                 </div>
                             ))}
                         </div>

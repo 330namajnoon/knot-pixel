@@ -85,6 +85,7 @@ class ImageCuter {
     render() {
         return new Promise<ImageCuter>((resolve, reject) => {
             this.img = new Image();
+            this.img.crossOrigin = "anonymous";
             this.img.src = this.imgSrc;
             this.img.onload = () => {
                 if (this.img.width < this.img.height) {
@@ -298,7 +299,7 @@ class ImageCuter {
 			width,
 			height
 		);
-		return cutCanvas.toDataURL();
+		return cutCanvas;
     }
 }
 
