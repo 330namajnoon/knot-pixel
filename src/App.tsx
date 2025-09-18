@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import store from "./services/store";
 import PaternsPage from "./pages/PaternsPage";
 import LoginPage from "./pages/LoginPage";
+import WorksPage from "./pages/WorksPage";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                 <BrowserRouter>
                     <Routes>
                         <Route path={path.PATERNS} element={<PaternsPage />} />
+                        <Route path={path.WORKS} element={<WorksPage />} />
                         <Route path={path.LOGIN} element={<LoginPage />} />
                         <Route path={path.SELECT_IMAGE} element={<ImageSelector />} />
                         <Route path={path.CUT_IMAGE} element={<CutImage />} />

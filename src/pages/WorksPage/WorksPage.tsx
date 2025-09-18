@@ -1,13 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import { useGetPaternsQuery } from "../../services/apiSlice/paternApiSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetPaternWorksQuery } from "../../services/apiSlice/paternApiSlice";
 import { BASE_URL, path } from "../../constants";
 import { Box, Container, Fab } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Img from "../../components/Img";
 
-const PaternsPage = () => {
+const WorksPage = () => {
     const navigate = useNavigate();
-    const { data: paternsData } = useGetPaternsQuery();
+    const { paternId } = useParams<{ paternId: string }>();
+    const { data: paternWorksData } = useGetPaternWorksQuery({ paternId: paternId || "" }, { skip: !paternId });
 
     return (
         <Container
@@ -23,13 +24,13 @@ const PaternsPage = () => {
                 position: "relative",
             }}
         >
-            {paternsData?.map((patern) => (
+            {paternWorksData?.map((work) => (
                 <Box
                     sx={{ cursor: "pointer", width: "45vw", height: "fit-content", overflow: "hidden" }}
-                    key={patern.id}
-                    onClick={() => navigate(path.WORKS.replace(":paternId", patern.id.toString()))}
+                    key={work.id}
+                    onClick={() => navigate(path.PATERN.replace(":paternId", work.paternId.toString()))}
                 >
-                    <Img style={{ width: "100%", borderRadius: "10px" }} src={`${BASE_URL}/${patern.path}`}  />
+                    <Img style={{ width: "100%", borderRadius: "10px" }} src={`${BASE_URL}/${work.paternPath}`}  />
                 </Box>
             ))}
             <Fab
@@ -47,4 +48,4 @@ const PaternsPage = () => {
     );
 };
 
-export default PaternsPage;
+export default WorksPage;

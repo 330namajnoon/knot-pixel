@@ -25,9 +25,9 @@ export const paternApiSlice = apiSlice.injectEndpoints({
 			transformResponse: (response: { data: Patern[] }) => response.data,
 			providesTags: ["Patern"],
 		}),
-		getPaternWorks: builder.query<Work[], void>({
-			query: () =>  ({
-				url: `/works`,
+		getPaternWorks: builder.query<Work[], { paternId: string }>({
+			query: ({ paternId }) =>  ({
+				url: `/works/${paternId}`,
 				method: "GET",
 			}),
 			transformResponse: (response: { data: Work[] }) => response.data,

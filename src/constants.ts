@@ -3,6 +3,7 @@ const BASE_URL = "https://sinul.es";
 
 const path = {
     PATERNS: "/",
+    WORKS: "/works/:paternId",
     LOGIN: "/login",
     SELECT_IMAGE: "/select-image/:paternId",
     CUT_IMAGE: "/cut/:paternId",
