@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PaternCreator, { type Patern } from "../../lib/modules/PaternCreator";
+import PaternCreator, { type Knot, type Patern } from "../../lib/modules/PaternCreator";
 import { BASE_URL } from "../../constants";
 import { Container } from "@mui/material";
 import { useGetPaternQuery } from "../../services/apiSlice/paternApiSlice";
@@ -9,7 +9,7 @@ import ImagePaletteConfigurator from "../../lib/modules/ImagePaletteConfigurator
 const PaternPage = () => {
     const [patern, setPatern] = useState<Patern | null>(null);
     const [src, setSrc] = useState("");
-    const [selectedKnotGroup, setSelectedKnotGroup] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [selectedKnotGroup, setSelectedKnotGroup] = useState<Knot>();
     const { paternId } = useParams<{ paternId: string }>();
     const { data: paternData } = useGetPaternQuery({ paternId: paternId || "" }, { skip: !paternId });
 
@@ -20,7 +20,7 @@ const PaternPage = () => {
                 .create()
                 .then((patern) => {
                     const knots = patern.knots;
-                    const pixel = [];
+                    const pixel: Knot[] = [];
                     knots.forEach((row) => {
                         row.forEach((knotGroup) => {
                             knotGroup.forEach((knot) => {
@@ -42,7 +42,7 @@ const PaternPage = () => {
                         }
                     });
 
-                    setSelectedKnotGroup({ x: 0, y: knots.length - 40 });
+                    setSelectedKnotGroup({ x: 0, y: knots.length - 40, color: "" });
                 })
                 .catch((error) => {
                     console.error("Error creating patern:", error);
@@ -54,15 +54,20 @@ const PaternPage = () => {
         function handleKeyDown(e: KeyboardEvent) {
             if (e.key === "s") {
                 setSelectedKnotGroup((selectedKnotGroup) => {
+                    if (!selectedKnotGroup) {
+                        return selectedKnotGroup;
+                    }
                     if (patern?.knots[selectedKnotGroup.y]?.[selectedKnotGroup.x + 1]) {
                         return {
                             x: selectedKnotGroup.x + 1,
                             y: selectedKnotGroup.y,
+                            color: ""
                         };
                     } else if (patern?.knots[selectedKnotGroup.y - 1]) {
                         return {
                             x: 0,
                             y: selectedKnotGroup.y - 1,
+                            color: ""
                         };
                     }
                 });
@@ -93,8 +98,8 @@ const PaternPage = () => {
                                     ref={(el) => {
                                         if (
                                             el &&
-                                            groupIndex === selectedKnotGroup.x &&
-                                            rowIndex === selectedKnotGroup.y &&
+                                            groupIndex === selectedKnotGroup?.x &&
+                                            rowIndex === selectedKnotGroup?.y &&
                                             knotIndex === knotGroup.length - 1
                                         ) {
                                             el.scrollIntoView({ behavior: "smooth", inline: "center", block: "center" });
@@ -110,13 +115,13 @@ const PaternPage = () => {
                                         color: ImagePaletteConfigurator.getContrastColor(knot.color),
                                         backgroundColor: knot.color,
                                         border:
-                                            groupIndex === selectedKnotGroup.x && rowIndex === selectedKnotGroup.y
+                                            groupIndex === selectedKnotGroup?.x && rowIndex === selectedKnotGroup?.y
                                                 ? "2px solid #9e9e9e"
                                                 : "none",
                                     }}
                                 >
-                                    {groupIndex === selectedKnotGroup.x &&
-                                        rowIndex === selectedKnotGroup.y &&
+                                    {groupIndex === selectedKnotGroup?.x &&
+                                        rowIndex === selectedKnotGroup?.y &&
                                         knot.x + 1}
                                 </div>
                             ))}
