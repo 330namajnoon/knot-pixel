@@ -11,6 +11,7 @@ import store from "./services/store";
 import PaternsPage from "./pages/PaternsPage";
 import LoginPage from "./pages/LoginPage";
 import WorksPage from "./pages/WorksPage";
+import WorkPage from "./pages/WorkPage";
 
 function App() {
 
@@ -21,12 +22,12 @@ function App() {
                     <Routes>
                         <Route path={path.PATERNS} element={<PaternsPage />} />
                         <Route path={path.WORKS} element={<WorksPage />} />
+                        <Route path={path.WORK} element={<WorkPage />} />
                         <Route path={path.LOGIN} element={<LoginPage />} />
                         <Route path={path.SELECT_IMAGE} element={<ImageSelector />} />
                         <Route path={path.CUT_IMAGE} element={<CutImage />} />
                         <Route path={path.PALETTE_CONFIGURATOR} element={<PaletteConfigurator />} />
                         <Route path={path.IMAGE_RESOLUTION} element={<ImageResolution />} />
-                        <Route path={path.PATERN} element={<PaternPage />} />
                     </Routes>
                 </BrowserRouter>
             </ImageProvider>

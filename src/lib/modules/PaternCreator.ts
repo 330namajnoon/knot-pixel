@@ -8,6 +8,8 @@ export type Knot = {
 
 export type Patern = {
     imageSrc: string;
+    w: number;
+    h: number;
     knots: Knot[][][];
 }
 
@@ -53,6 +55,8 @@ class PaternCreator {
         }
         return {
             imageSrc: this.imageSrc,
+            w: imageData.width,
+            h: imageData.height,
             knots: knots.reverse(),
         };
         

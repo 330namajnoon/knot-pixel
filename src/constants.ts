@@ -3,13 +3,14 @@ const BASE_URL = "https://sinul.es";
 
 const path = {
     PATERNS: "/",
-    WORKS: "/works/:paternId",
+    WORKS: "/patern/:paternId/works",
+    WORK: "/patern/:paternId/work/:workId",
     LOGIN: "/login",
     SELECT_IMAGE: "/select-image/:paternId",
     CUT_IMAGE: "/cut/:paternId",
     PALETTE_CONFIGURATOR: "/palette/:paternId",
     IMAGE_RESOLUTION: "/image-resolution/:paternId",
-    PATERN: "/patern/:paternId",
+    PATERN: "/patern/:paternId/work/:workId",
 };
 
 export { path, BASE_URL };
