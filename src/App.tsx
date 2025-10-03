@@ -5,7 +5,6 @@ import { ImageProvider } from "./hooks/useImage";
 import { PaletteConfigurator } from "./pages/PaletteConfigurator";
 import { path } from "./constants";
 import { ImageResolution } from "./pages/ImageResolution";
-import PaternPage from "./pages/PaternPage";
 import { Provider } from "react-redux";
 import store from "./services/store";
 import PaternsPage from "./pages/PaternsPage";

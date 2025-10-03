@@ -1,6 +1,5 @@
 import { Box, Container, Fab, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useImage } from "../../hooks/useImage";
 import ImageCuter from "../../lib/modules/ImageCuter";
 import { ContentCut, NavigateNext } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
