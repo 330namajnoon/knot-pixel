@@ -17,7 +17,7 @@ function App() {
     return (
         <Provider store={store}>
             <ImageProvider>
-                <BrowserRouter>
+                <BrowserRouter basename="/dev">
                     <Routes>
                         <Route path={path.PATERNS} element={<PaternsPage />} />
                         <Route path={path.WORKS} element={<WorksPage />} />

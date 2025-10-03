@@ -23,7 +23,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 
     if (result.error && (result.error.status === 401 || result.error.status === 403)) {
         // aquí token inválido o expirado
-        window.open(path.LOGIN, "_self"); // o usa react-router navigate
+        window.open("dev/login", "_self"); // o usa react-router navigate
     }
 
     return result;
