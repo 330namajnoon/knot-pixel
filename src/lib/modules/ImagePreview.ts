@@ -49,7 +49,6 @@ class ImagePreview {
             }
             this.lastData = { ...this.lastData, x, y, w, h };
         }
-        console.log(this.imageData);
         if (
             this.lastData.colorCount !== this.colorCount ||
             (this.lastData.colorSpace !== this.colorSpace,

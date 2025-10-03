@@ -29,7 +29,6 @@ const ImageSelector = () => {
                         formData.append("image", file);
                         setPatern({ imageData: formData, paternId: paternId || "" }).then((res) => {
                             if (res.data && res.data?.success) {
-                                console.log("Image uploaded successfully");
                                 navigate(path.CUT_IMAGE.replace(":paternId", paternId || ""));
                             } else {
                                 alert("Error uploading image");

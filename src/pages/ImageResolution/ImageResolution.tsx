@@ -123,15 +123,13 @@ const ImageResolution = () => {
                             return;
                         }
                         imageResolutionConfigurator.current.toBlob((blob) => {
-                            console.log(blob);
                             if (blob) {
                                 const file = new File([blob], "patern.png", { type: "image/png" });
                                 const formData = new FormData();
                                 formData.append("image", file);
                                 setPatern({ imageData: formData, paternId: paternId || "" })
                                     .unwrap()
-                                    .then((res) => {
-                                        console.log("Image uploaded successfully");
+                                    .then(() => {
                                         navigate(path.PALETTE_CONFIGURATOR.replace(":paternId", paternId || ""));
                                     });
                             }

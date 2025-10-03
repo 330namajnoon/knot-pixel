@@ -208,11 +208,11 @@ class ImagePaletteConfigurator {
             );
             const imageData = this.ctx.getImageData(0, 0, imagePos.width, imagePos.height);
             const imageDataOriginal = this.ctxOriginal.getImageData(0, 0, this.img.width, this.img.height);
-            const { indexedData, palette } = this.quantizeImageKMeans(imageData, this.paletteSize, 2000);
+            const { indexedData, palette } = this.quantizeImageKMeans(imageData, this.paletteSize, 200000);
             const { indexedData: indexedDataOriginal } = this.quantizeImageKMeans(
                 imageDataOriginal,
                 this.paletteSize,
-                2000
+                200000
             );
             // const pixels = [];
             // for (let i = 0; i < data.length; i += 4) {
@@ -339,11 +339,11 @@ class ImagePaletteConfigurator {
     }
 
     toImageURL(): string {
-        return this.canvasOriginal.toDataURL("image/png");
+        return this.canvas.toDataURL("image/png");
     }
 
     toBlob(callback: (blob: Blob | null) => void) {
-        this.canvasOriginal.toBlob(callback, "image/png");
+        this.canvas.toBlob(callback, "image/png");
     }
 
     static hexToRgb(hex: string) {

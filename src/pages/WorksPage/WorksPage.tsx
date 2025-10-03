@@ -44,7 +44,6 @@ const WorksPage = () => {
                     try {
                         if (paternId) {
                             const response = await createWork({ paternId }).unwrap();
-                            console.log(response);
                             if (response.success && response.insertId) {
                                 navigate(
                                     path.WORK.replace(":paternId", paternId || "").replace(

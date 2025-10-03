@@ -16,10 +16,8 @@ const WorkPage = () => {
             paternCreator
                 .create()
                 .then((patern) => {
-                    console.log(patern)
                     if (rootRef.current) {
-                        const work = new Work(patern, rootRef.current);
-                        console.log(work);
+                        new Work(patern, rootRef.current);
                     }
                 })
                 .catch((error) => {

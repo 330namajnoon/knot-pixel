@@ -1,13 +1,16 @@
+import type { Mesh } from "@babylonjs/core";
 import ImagePaletteConfigurator from "./ImagePaletteConfigurator";
 
 export type Knot = {
     x: number;
     y: number;
     color: string;
+    mesh?: Mesh
 }
 
 export type Patern = {
     imageSrc: string;
+    img: HTMLImageElement;
     w: number;
     h: number;
     knots: Knot[][][];
@@ -25,7 +28,7 @@ class PaternCreator {
         this.ctx = this.canvas.getContext("2d")!;
     }
 
-    getPatern(imageData: ImageData): Patern {
+    getPatern(imageData: ImageData, img: HTMLImageElement): Patern {
         const knots: Knot[][][] = [];
         const pixelData = imageData.data;
         const width = imageData.width;
@@ -55,9 +58,10 @@ class PaternCreator {
         }
         return {
             imageSrc: this.imageSrc,
+            img: img,
             w: imageData.width,
             h: imageData.height,
-            knots: knots.reverse(),
+            knots: knots,
         };
         
     }
@@ -72,7 +76,7 @@ class PaternCreator {
                 this.canvas.height = img.height;
                 this.ctx.drawImage(img, 0, 0);
                 const imageData = this.ctx.getImageData(0, 0, img.width, img.height);
-                const patern = this.getPatern(imageData);
+                const patern = this.getPatern(imageData, img);
                 resolve(patern);
             };
             img.onerror = (error) => {

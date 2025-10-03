@@ -10,7 +10,6 @@ const controllers = {
     }),
     setPaternController: createController((req, res) => {
         const file = req.params.file;
-        console.log(req.file);
         exes(
             `mv ${path.join(__dirname, `./mcd/${req.file.originalname}`)} ${path.join(__dirname, `./mcd/${file}`)}`,
             (error, stdout, stderr) => {

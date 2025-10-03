@@ -53,8 +53,6 @@ const PaletteConfigurator = () => {
         rgb[1] = Math.floor(rgb[1] / (size * size));
         rgb[2] = Math.floor(rgb[2] / (size * size));
 
-        console.log(rgb);
-
         setDetectedColor(rgb);
         setInChangingColor((prev) => {
             if (prev.index !== -1) {
@@ -65,7 +63,7 @@ const PaletteConfigurator = () => {
     }
 
     const handleCaptureCamera = (index: number, color: number[]) => {
-        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then((stream) => {
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
                 videoRef.current.play();
@@ -216,8 +214,7 @@ const PaletteConfigurator = () => {
                                 setPatern({ imageData: formData, paternId: paternId || "" })
                                     .unwrap()
                                     .then(() => {
-                                        console.log("Image uploaded successfully");
-                                        navigate(path.PATERN.replace(":paternId", paternId || ""));
+                                        navigate(path.WORKS.replace(":paternId", paternId || ""));
                                     });
                             }
                         });
