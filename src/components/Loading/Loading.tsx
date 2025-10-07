@@ -5,7 +5,7 @@ type LoadingProps = {
 };
 
 const Loading = ({ isLoading = false }: LoadingProps) => {
-    if (isLoading) return <img style={{ width: "100vw", height: "100vh", position: "absolute", objectFit: "cover" }} src={LoadingImage} alt="" />;
+    if (isLoading) return <img style={{ width: "100vw", height: "100vh", left: "0px", top: "0px", position: "fixed", objectFit: "cover", zIndex: 10000 }} src={LoadingImage} alt="" />;
 	return null;
 };
 

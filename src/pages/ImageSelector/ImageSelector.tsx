@@ -2,12 +2,13 @@ import { Add, NavigateNext } from "@mui/icons-material";
 import { Box, Container, Fab, Typography } from "@mui/material";
 import { createRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { path } from "../../constants";
+import { PaternStates, path } from "../../constants";
 import { useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
+import Loading from "../../components/Loading";
 
 const ImageSelector = () => {
     const navigate = useNavigate();
-    const [setPatern] = useSetPaternMutation();
+    const [setPatern, { isLoading: isLoadingSetPatern }] = useSetPaternMutation();
     const fileRef = createRef<HTMLInputElement>();
     const [src, setSrc] = useState<string>("");
     const { paternId } = useParams<{ paternId: string }>();
@@ -27,6 +28,7 @@ const ImageSelector = () => {
                         const file = new File([blob], "patern.png", { type: "image/png" });
                         const formData = new FormData();
                         formData.append("image", file);
+                        formData.append("state", PaternStates.IMAGE_SELECTED);
                         setPatern({ imageData: formData, paternId: paternId || "" }).then((res) => {
                             if (res.data && res.data?.success) {
                                 navigate(path.CUT_IMAGE.replace(":paternId", paternId || ""));
@@ -48,15 +50,17 @@ const ImageSelector = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "100vh",
                 gap: 4,
+                minHeight: "100vh",
+                paddingBottom: "30px",
+                paddingTop: "30px",
             }}
         >
             <Typography variant="h1" component="h2" color="text" sx={{ fontSize: "40px" }}>
                 Select an Image
             </Typography>
             {src && (
-                <Box sx={{ width: "100%", maxWidth: "600px", maxHeight: "70vh", overflow: "hidden" }}>
+                <Box sx={{ width: "100%" }}>
                     <img src={src} style={{ objectFit: "cover", width: "100%" }} alt="" />
                 </Box>
             )}
@@ -95,6 +99,7 @@ const ImageSelector = () => {
                     }
                 }}
             />
+            <Loading isLoading={isLoadingSetPatern}/>
         </Container>
     );
 };

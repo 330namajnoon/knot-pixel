@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import ImageCuter from "../../lib/modules/ImageCuter";
 import { ContentCut, NavigateNext } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL, path } from "../../constants";
+import { BASE_URL, PaternStates, path } from "../../constants";
 import { useGetPaternQuery, useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
 
-const CutImage = () => {
+const CutImagePage = () => {
     const navigate = useNavigate();
     const rootRef = useRef<HTMLDivElement>(null);
     const imageCuterRef = useRef<ImageCuter>(null);
@@ -67,6 +67,7 @@ const CutImage = () => {
                                 const file = new File([blob], "patern.png", { type: "image/png" });
                                 const formData = new FormData();
                                 formData.append("image", file);
+                                formData.append("state", PaternStates.CUTED);
                                 setPatern({ imageData: formData, paternId: paternId || "" }).then((res) => {
                                     if (res.data && res.data?.success) {
                                         navigate(path.IMAGE_RESOLUTION.replace(":paternId", paternId || ""));
@@ -85,4 +86,4 @@ const CutImage = () => {
     );
 };
 
-export default CutImage;
+export default CutImagePage;

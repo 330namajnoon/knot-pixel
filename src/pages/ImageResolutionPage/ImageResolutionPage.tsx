@@ -3,10 +3,11 @@ import { Box, Container, Fab, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageSizeConfigurator from "../../lib/modules/ImageSizeConfigurator";
-import { BASE_URL, path } from "../../constants";
+import { BASE_URL, PaternStates, path } from "../../constants";
 import { useGetPaternQuery, useSetPaternMutation } from "../../services/apiSlice/paternApiSlice";
+import Loading from "../../components/Loading";
 
-const ImageResolution = () => {
+const ImageResolutionPage = () => {
     const navigate = useNavigate();
     const [src, setSrc] = useState("");
     const rootRef = useRef<HTMLDivElement>(null);
@@ -17,7 +18,7 @@ const ImageResolution = () => {
 
     const { data: paternData } = useGetPaternQuery({ paternId: paternId || "" }, { skip: !paternId });
 
-    const [setPatern] = useSetPaternMutation();
+    const [setPatern, { isLoading: isLoadingSetPatern }] = useSetPaternMutation();
 
     useEffect(() => {
         if (src && rootRef.current) {
@@ -82,10 +83,11 @@ const ImageResolution = () => {
                             }
                             setImageSize({
                                 width,
-                                height:
+                                height: Math.round(
                                     ((imageResolutionConfigurator?.current?.getSize?.()?.height || 0) /
                                         (imageResolutionConfigurator?.current?.getSize?.()?.width || 0)) *
-                                    width,
+                                        width
+                                ),
                             });
                         }}
                     />
@@ -104,10 +106,11 @@ const ImageResolution = () => {
                                 );
                             }
                             setImageSize({
-                                width:
+                                width: Math.round(
                                     ((imageResolutionConfigurator?.current?.getSize?.()?.width || 0) /
                                         (imageResolutionConfigurator?.current?.getSize?.()?.height || 0)) *
-                                    height,
+                                        height
+                                ),
                                 height,
                             });
                         }}
@@ -127,6 +130,7 @@ const ImageResolution = () => {
                                 const file = new File([blob], "patern.png", { type: "image/png" });
                                 const formData = new FormData();
                                 formData.append("image", file);
+                                formData.append("state", PaternStates.RESIZED);
                                 setPatern({ imageData: formData, paternId: paternId || "" })
                                     .unwrap()
                                     .then(() => {
@@ -139,8 +143,9 @@ const ImageResolution = () => {
                     <NavigateNext />
                 </Fab>
             </Box>
+            <Loading isLoading={isLoadingSetPatern} />
         </Container>
     );
 };
 
-export default ImageResolution;
+export default ImageResolutionPage;

@@ -50,6 +50,7 @@ class ImageCuter {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.imageSmoothingEnabled = false;
         this.ctx.drawImage(
             this.img,
             0,
@@ -143,83 +144,129 @@ class ImageCuter {
                 this.cuter.left.style.cursor = "ew-resize";
                 this.cuter.right.style.cursor = "ew-resize";
 
+                this.cuter.top.removeEventListener("mousedown", () => {});
                 this.cuter.top.addEventListener("mousedown", () => {
                     this.mosueDown = "top";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
+                
+                
+                this.cuter.bottom.removeEventListener("mousedown", () => {});
                 this.cuter.bottom.addEventListener("mousedown", () => {
                     this.mosueDown = "bottom";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
+                
+                
+                this.cuter.left.removeEventListener("mousedown", () => {});
                 this.cuter.left.addEventListener("mousedown", () => {
                     this.mosueDown = "left";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
+                
+                
+                this.cuter.right.removeEventListener("mousedown", () => {});
                 this.cuter.right.addEventListener("mousedown", () => {
                     this.mosueDown = "right";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
 
+
+                this.cuter.top.removeEventListener("touchstart", () => {});
                 this.cuter.top.addEventListener("touchstart", () => {
                     this.mosueDown = "top";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
+
+
+                this.cuter.bottom.removeEventListener("touchstart", () => {});
                 this.cuter.bottom.addEventListener("touchstart", () => {
                     this.mosueDown = "bottom";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
+
+
+                this.cuter.left.removeEventListener("touchstart", () => {});
                 this.cuter.left.addEventListener("touchstart", () => {
                     this.mosueDown = "left";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
+
+
+                this.cuter.right.removeEventListener("touchstart", () => {});
                 this.cuter.right.addEventListener("touchstart", () => {
                     this.mosueDown = "right";
                     this.cuterPosCopy = {
                         ...this.cuterPos,
                     };
-                });
+                }, { passive: false });
 
+
+                this.cuter.top.removeEventListener("mouseup", () => {});
                 this.cuter.top.addEventListener("mouseup", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
+
+
+                this.cuter.bottom.removeEventListener("mouseup", () => {});
                 this.cuter.bottom.addEventListener("mouseup", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
+
+
+                this.cuter.left.removeEventListener("mouseup", () => {});
                 this.cuter.left.addEventListener("mouseup", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
+
+
+                this.cuter.right.removeEventListener("mouseup", () => {});
                 this.cuter.right.addEventListener("mouseup", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
 
+
+                this.cuter.top.removeEventListener("touchend", () => {});
                 this.cuter.top.addEventListener("touchend", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
+
+
+                this.cuter.bottom.removeEventListener("touchend", () => {});
                 this.cuter.bottom.addEventListener("touchend", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
+
+
+                this.cuter.left.removeEventListener("touchend", () => {});
                 this.cuter.left.addEventListener("touchend", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
+
+
+                this.cuter.right.removeEventListener("touchend", () => {});
                 this.cuter.right.addEventListener("touchend", () => {
                     this.mosueDown = false;
-                });
+                }, { passive: false });
 
+
+                this.root.removeEventListener("mousemove", () => {});
                 this.root.addEventListener("mousemove", (e) => {
+                    e.preventDefault();
                     if (this.mosueDown) {
                         const rect = this.canvas.getBoundingClientRect();
                         const mouseX = e.clientX - rect.left;
@@ -237,9 +284,12 @@ class ImageCuter {
                         }
                         this.draw();
                     }
-                });
+                }, { passive: false });
 
+
+                this.root.removeEventListener("touchmove", () => {});
                 this.root.addEventListener("touchmove", (e) => {
+                    e.preventDefault();
                     if (this.mosueDown) {
                         const rect = this.canvas.getBoundingClientRect();
                         const mouseX = e.touches[0].clientX - rect.left;
@@ -257,12 +307,12 @@ class ImageCuter {
                         }
                         this.draw();
                     }
-                });
+                }, { passive: false });
 
-                this.cuter.top.style.backgroundColor = "#ffffff";
-                this.cuter.bottom.style.backgroundColor = "#ffffff";
-                this.cuter.left.style.backgroundColor = "#ffffff";
-                this.cuter.right.style.backgroundColor = "#ffffff";
+                this.cuter.top.style.backgroundColor = "#000000";
+                this.cuter.bottom.style.backgroundColor = "#000000";
+                this.cuter.left.style.backgroundColor = "#000000";
+                this.cuter.right.style.backgroundColor = "#000000";
                 this.root.appendChild(this.cuter.top);
                 this.root.appendChild(this.cuter.bottom);
                 this.root.appendChild(this.cuter.left);

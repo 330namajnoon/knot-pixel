@@ -48,13 +48,6 @@ class Work {
             this.patern.img.width * this.view.zoom,
             this.patern.img.height * this.view.zoom
         );
-
-        this.patern.knots[2][2].forEach((knot) => {
-            const x = (knot.x + 1) * this.view.zoom + this.view.offsetX;
-            const y = (knot.y + 1) * this.view.zoom + this.view.offsetY;
-            this.ctx.strokeStyle = "red";
-            this.ctx.strokeRect(x, y, this.view.zoom, this.view.zoom);
-        });
     }
 
     update() {

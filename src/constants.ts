@@ -13,4 +13,12 @@ const path = {
     PATERN: "/patern/:paternId/work/:workId",
 };
 
-export { path, BASE_URL };
+const PaternStates = {
+    CREATED: "CREATED",
+    IMAGE_SELECTED: "IMAGE_SELECTED",
+    CUTED: "CUTED",
+    RESIZED: "RESIZED", 
+    PALETTE_CONFIGURATED: "PALETTE_CONFIGURATED",
+}
+
+export { path, BASE_URL, PaternStates };

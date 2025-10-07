@@ -29,12 +29,11 @@ class ImageSizeConfigurator {
         let imageWidth = (this.img.width / this.img.height) * (rootRect.height * scale);
         let imageHeight = rootRect.height * scale;
 
-        
         if (this.img.width > this.img.height) {
             imageWidth = rootRect.width * scale;
             imageHeight = (this.img.height / this.img.width) * (rootRect.width * scale);
         }
-        
+
         if (this.xPixels === 0 || this.yPixels === 0) {
             this.xPixels = imageWidth;
             this.yPixels = imageHeight;
@@ -43,7 +42,9 @@ class ImageSizeConfigurator {
         this.canvas.style.cssText = `width: ${imageWidth}px; height: ${imageHeight}px; position: absolute;`;
         this.canvas.width = this.xPixels;
         this.canvas.height = this.yPixels;
+        this.ctx.imageSmoothingEnabled = false;
         this.ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, 0, 0, this.xPixels, this.yPixels);
+        this.ctx.imageSmoothingEnabled = false;
     }
 
     render() {
@@ -62,7 +63,7 @@ class ImageSizeConfigurator {
 
     setRowSize(size: number) {
         this.xPixels = size;
-        this.yPixels = this.img.height / this.img.width * size;
+        this.yPixels = (this.img.height / this.img.width) * size;
         this.draw();
     }
 

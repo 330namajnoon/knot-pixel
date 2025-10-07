@@ -1,9 +1,11 @@
 import apiSlice from ".";
+import { PaternStates } from "../../constants";
 
 export interface Patern {
     id: number;
     path: string;
     name: string;
+    state: typeof PaternStates[keyof typeof PaternStates];
 }
 
 export interface Work {
